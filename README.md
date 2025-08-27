@@ -1,313 +1,470 @@
-# LazyVim Configuration
+# Personal Neovim Configuration
 
-A comprehensive Neovim configuration built on top of [LazyVim](https://github.com/LazyVim/LazyVim), featuring modern development tools, language support, and AI assistance.
+A LazyVim-based Neovim configuration optimized for personal development workflow with Go, JSON, and Markdown support.
 
-## ✨ Features
+## Installation
 
-- **🚀 Modern Plugin Management**: Built on [lazy.nvim](https://github.com/folke/lazy.nvim) for fast startup times
-- **🎨 Beautiful UI**: Tokyo Night colorscheme with Moon variant
-- **🤖 AI-Powered Development**: GitHub Copilot integration for intelligent code completion
-- **📝 Language Support**: Go, JSON, Markdown with comprehensive LSP, syntax highlighting, and tooling
-- **🔧 Enhanced Editing**: Smart text objects, incremental rename, dial for number manipulation
-- **📦 Testing**: Integrated testing framework with neotest
-- **🎯 Project Navigation**: Advanced search and file management with telescope
-- **📊 Status Line**: Informative status line with lualine
-- **🔍 Diagnostics**: Comprehensive error and warning display with trouble.nvim
+### Prerequisites
 
-## 📋 Prerequisites
-
-- **Neovim** >= 0.9.0 (needs to be built with LuaJIT)
-- **Git** >= 2.19.0 (for partial clones support)
-- A **Nerd Font** (optional, for icons)
-- For telescope.nvim (optional):
-  - **ripgrep** for live grep functionality
-  - **fd** for file finding
-- A terminal that supports true color and undercurl
-- Go toolchain (for Go language support)
-
-## 🚀 Installation
-
-### Fresh Installation
+Install the following dependencies before setting up this configuration:
 
 ```bash
-# Backup your existing Neovim configuration
-mv ~/.config/nvim ~/.config/nvim.bak
-mv ~/.local/share/nvim ~/.local/share/nvim.bak
-mv ~/.local/state/nvim ~/.local/state/nvim.bak
-mv ~/.cache/nvim ~/.cache/nvim.bak
+# On Arch Linux/Manjaro
+sudo pacman -S neovim git ripgrep fd nodejs npm go
 
-# Clone this configuration
-git clone https://github.com/your-username/nvim-config ~/.config/nvim
+# On Ubuntu/Debian
+sudo apt update
+sudo apt install neovim git ripgrep fd-find nodejs npm golang-go
 
-# Start Neovim - plugins will install automatically
+# On macOS
+brew install neovim git ripgrep fd node go
+```
+
+**Required versions:**
+- Neovim ≥ 0.9.0 (built with LuaJIT)
+- Git ≥ 2.19.0
+- Node.js (for LSP servers)
+- Go toolchain (for Go development)
+
+**Optional but recommended:**
+- A Nerd Font for icons (install via https://www.nerdfonts.com/)
+- Terminal with true color support
+
+### Installation Steps
+
+1. **Backup existing configuration:**
+```bash
+# Create backup directory
+mkdir -p ~/.config/nvim-backups/$(date +%Y%m%d_%H%M%S)
+
+# Backup all Neovim data
+mv ~/.config/nvim ~/.config/nvim-backups/$(date +%Y%m%d_%H%M%S)/config 2>/dev/null || true
+mv ~/.local/share/nvim ~/.config/nvim-backups/$(date +%Y%m%d_%H%M%S)/share 2>/dev/null || true
+mv ~/.local/state/nvim ~/.config/nvim-backups/$(date +%Y%m%d_%H%M%S)/state 2>/dev/null || true
+mv ~/.cache/nvim ~/.config/nvim-backups/$(date +%Y%m%d_%H%M%S)/cache 2>/dev/null || true
+```
+
+2. **Clone this configuration:**
+```bash
+git clone <your-repo-url> ~/.config/nvim
+```
+
+3. **Start Neovim and wait for automatic setup:**
+```bash
 nvim
 ```
 
-### Over Existing LazyVim
+The first startup will automatically:
+- Install lazy.nvim plugin manager
+- Download and install all plugins
+- Set up LSP servers via Mason
+- Configure everything according to your settings
 
-If you already have LazyVim installed, you can copy the configuration files:
+## Keymap Configuration
 
-```bash
-# Copy plugin configurations
-cp -r /path/to/this/config/lua/plugins/* ~/.config/nvim/lua/plugins/
+### Understanding the Keymap System
 
-# Copy extras configuration
-cp /path/to/this/config/lazyvim.json ~/.config/nvim/
+This configuration uses LazyVim's keymap system with `<space>` as the leader key. Keymaps are defined in multiple layers:
+
+1. **LazyVim defaults** - Built-in keymaps from LazyVim
+2. **Plugin-specific keymaps** - Automatically configured by plugins
+3. **Custom keymaps** - Your personal modifications in `lua/config/keymaps.lua`
+
+### Essential Default Keymaps
+
+#### File Operations
+```
+<leader>ff    - Find files (telescope)
+<leader>fg    - Live grep search
+<leader>fb    - Browse open buffers
+<leader>fr    - Recent files
+<leader>fn    - New file
+<leader>w     - Save file
+<leader>q     - Quit
+<leader>qq    - Quit all
 ```
 
-## 📁 Structure
-
+#### Navigation
 ```
-~/.config/nvim/
-├── init.lua                  # Entry point
-├── lazyvim.json             # LazyVim extras configuration
-├── lazy-lock.json           # Plugin version lockfile
-├── stylua.toml              # Lua formatter configuration
-├── lua/
-│   ├── config/
-│   │   ├── autocmds.lua     # Auto commands
-│   │   ├── keymaps.lua      # Custom keymaps
-│   │   ├── lazy.lua         # Lazy.nvim setup
-│   │   └── options.lua      # Vim options
-│   └── plugins/
-│       ├── colorscheme.lua  # Theme configuration
-│       └── example.lua      # Plugin examples/overrides
-└── README.md                # This file
+<C-h>         - Move to left window
+<C-j>         - Move to bottom window
+<C-k>         - Move to top window
+<C-l>         - Move to right window
+<C-u>         - Scroll up half page
+<C-d>         - Scroll down half page
+gd            - Go to definition
+gr            - Go to references
+gi            - Go to implementation
+K             - Show hover documentation
 ```
 
-## 🔧 Configuration
-
-### Enabled LazyVim Extras
-
-This configuration includes the following LazyVim extras:
-
-- `lazyvim.plugins.extras.ai.copilot` - GitHub Copilot integration
-- `lazyvim.plugins.extras.coding.yanky` - Enhanced yank/paste functionality
-- `lazyvim.plugins.extras.editor.dial` - Smart increment/decrement
-- `lazyvim.plugins.extras.editor.inc-rename` - Incremental rename with preview
-- `lazyvim.plugins.extras.lang.go` - Go language support
-- `lazyvim.plugins.extras.lang.json` - JSON language support
-- `lazyvim.plugins.extras.lang.markdown` - Markdown support with preview
-- `lazyvim.plugins.extras.test.core` - Testing framework integration
-- `lazyvim.plugins.extras.util.dot` - Dotfiles management
-- `lazyvim.plugins.extras.util.mini-hipatterns` - Highlight patterns
-- `lazyvim.plugins.extras.vscode` - VSCode compatibility
-
-### Theme Configuration
-
-The configuration uses the Tokyo Night theme with the "moon" variant:
-
-```lua
-{
-  "folke/tokyonight.nvim",
-  lazy = true,
-  opts = { style = "moon" },
-}
+#### Code Operations
+```
+<leader>ca    - Code actions
+<leader>cr    - Rename symbol
+<leader>cf    - Format code
+<leader>cd    - Line diagnostics
+<leader>cl    - Show diagnostics in location list
+gcc           - Comment/uncomment line
+gc            - Comment/uncomment selection (visual mode)
 ```
 
-### Plugin Performance Optimizations
-
-Several built-in plugins are disabled for better performance:
-
-- gzip
-- tarPlugin  
-- tohtml
-- tutor
-- zipPlugin
-
-## 🎯 Key Features
-
-### Language Support
-
-#### Go Development
-
-- Full LSP support with gopls
-- Automatic tool installation via Mason
-- Testing integration with neotest-golang
-- Proper module and workspace handling
-
-#### JSON/JSONC
-
-- Schema validation with SchemaStore.nvim
-- Advanced formatting and validation
-- Support for comments in JSON
-
-#### Markdown
-
-- Live preview with markdown-preview.nvim
-- Enhanced syntax highlighting
-- Table editing support
-
-### AI Integration
-
-GitHub Copilot is configured for intelligent code completion:
-
-- Automatic suggestions while typing
-- Accept suggestions with `<Tab>`
-- Navigate through suggestions with `<C-n>` and `<C-p>`
-
-### Enhanced Editing
-
-- **Yanky**: Advanced yank ring with persistent history
-- **Dial**: Smart increment/decrement for numbers, dates, and more
-- **Inc-rename**: Live preview while renaming symbols
-- **Mini.ai**: Enhanced text objects for better code manipulation
-
-### Testing
-
-Integrated testing with neotest:
-
-- Run tests directly from Neovim
-- Visual test results and output
-- Support for Go testing framework
-
-## 🛠️ Customization
-
-### Adding New Plugins
-
-Create a new file in `lua/plugins/` or modify existing ones:
-
-```lua
--- lua/plugins/my-plugin.lua
-return {
-  "author/plugin-name",
-  opts = {
-    -- Plugin configuration
-  },
-}
+#### Testing (neotest)
+```
+<leader>tt    - Run nearest test
+<leader>tT    - Run all tests in file
+<leader>ts    - Toggle test summary
+<leader>to    - Show test output
+<leader>tO    - Output panel
 ```
 
-### Custom Keymaps
+#### Git Integration
+```
+<leader>gg    - LazyGit
+<leader>gb    - Git blame line
+<leader>gf    - Git file history
+]h            - Next git hunk
+[h            - Previous git hunk
+<leader>ghs   - Stage hunk
+<leader>ghu   - Unstage hunk
+<leader>ghr   - Reset hunk
+```
 
-Add your keymaps to `lua/config/keymaps.lua`:
+### Custom Keymap Examples
+
+Add your custom keymaps to `lua/config/keymaps.lua`:
 
 ```lua
 -- lua/config/keymaps.lua
 local map = vim.keymap.set
 
-map("n", "<leader>my", function()
-  -- Your custom function
-end, { desc = "My custom keymap" })
+-- Quick save with Ctrl+S
+map({ "n", "i", "v" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
+
+-- Better window navigation
+map("n", "<C-Left>", "<C-w>h", { desc = "Go to left window" })
+map("n", "<C-Right>", "<C-w>l", { desc = "Go to right window" })
+map("n", "<C-Up>", "<C-w>k", { desc = "Go to upper window" })
+map("n", "<C-Down>", "<C-w>j", { desc = "Go to lower window" })
+
+-- Move lines up/down
+map("n", "<A-j>", "<cmd>m .+1<cr>==", { desc = "Move line down" })
+map("n", "<A-k>", "<cmd>m .-2<cr>==", { desc = "Move line up" })
+map("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move selection down" })
+map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move selection up" })
+
+-- Clear search highlight
+map("n", "<Esc>", "<cmd>nohlsearch<cr>", { desc = "Clear search highlight" })
+
+-- Better indenting in visual mode
+map("v", "<", "<gv", { desc = "Unindent line" })
+map("v", ">", ">gv", { desc = "Indent line" })
+
+-- Quick access to config files
+map("n", "<leader>fc", function()
+  require("telescope.builtin").find_files({ cwd = vim.fn.stdpath("config") })
+end, { desc = "Find config files" })
+
+-- Toggle relative line numbers
+map("n", "<leader>tn", function()
+  vim.wo.relativenumber = not vim.wo.relativenumber
+end, { desc = "Toggle relative numbers" })
+
+-- Custom text objects for function arguments
+map({ "o", "x" }, "ia", "<cmd>lua require('mini.ai').select_textobject('a', 'i')<cr>", { desc = "Select argument" })
+map({ "o", "x" }, "aa", "<cmd>lua require('mini.ai').select_textobject('a', 'a')<cr>", { desc = "Select argument" })
 ```
 
-### Vim Options
+### Plugin-Specific Keymap Configuration
 
-Modify `lua/config/options.lua` to change Vim settings:
-
+#### Customizing Telescope
 ```lua
--- lua/config/options.lua
-vim.opt.relativenumber = false  -- Disable relative line numbers
-vim.opt.wrap = true            -- Enable line wrapping
+-- lua/plugins/telescope.lua
+return {
+  "nvim-telescope/telescope.nvim",
+  keys = {
+    -- Override default find files
+    { "<leader>ff", "<cmd>Telescope find_files hidden=true<cr>", desc = "Find files (including hidden)" },
+    -- Add custom file search in specific directory
+    { "<leader>fp", function()
+        require("telescope.builtin").find_files({ cwd = "~/projects" })
+      end, desc = "Find files in projects" },
+  },
+  opts = {
+    defaults = {
+      -- Custom key mappings within telescope
+      mappings = {
+        i = {
+          ["<C-j>"] = "move_selection_next",
+          ["<C-k>"] = "move_selection_previous",
+          ["<C-q>"] = "send_to_qflist",
+        },
+      },
+    },
+  },
+}
 ```
 
-## 🔍 Default Keymaps
+#### Neo-tree Custom Keys
+```lua
+-- lua/plugins/neo-tree.lua
+return {
+  "nvim-neo-tree/neo-tree.nvim",
+  opts = {
+    window = {
+      mappings = {
+        -- Custom mappings for neo-tree
+        ["<space>"] = "none", -- Remove default space mapping
+        ["v"] = "open_vsplit",
+        ["s"] = "open_split",
+        ["t"] = "open_tabnew",
+        ["P"] = "toggle_preview",
+      },
+    },
+  },
+}
+```
 
-LazyVim provides many default keymaps. Some key ones include:
+### Keymap Discovery
 
-### General
+#### View All Available Keymaps
+```
+<leader>sk    - Search keymaps (telescope)
+<leader>?     - Show which-key help
+```
 
-- `<leader>` - Space (Leader key)
-- `<leader>ff` - Find files
-- `<leader>fg` - Live grep
-- `<leader>fb` - Browse buffers
+#### Check Specific Key Binding
+```vim
+:verbose map <key>    " Shows what key is mapped to
+:nmap                 " Show normal mode mappings
+:imap                 " Show insert mode mappings
+:vmap                 " Show visual mode mappings
+```
 
-### LSP
+## Backup and Restoration
 
-- `gd` - Go to definition
-- `gr` - Go to references  
-- `K` - Hover documentation
-- `<leader>ca` - Code actions
-- `<leader>cr` - Rename symbol
+### Complete Backup Procedure
 
-### Testing
+#### 1. Automated Backup Script
 
-- `<leader>tt` - Run nearest test
-- `<leader>tT` - Run all tests
-- `<leader>ts` - Toggle test summary
-
-For a complete list of keymaps, use `<leader>sk` in Neovim.
-
-## 🔄 Updates
-
-### Update Plugins
+Create a backup script at `~/.local/bin/nvim-backup`:
 
 ```bash
-# Inside Neovim
-:Lazy update
+#!/bin/bash
+# nvim-backup - Complete Neovim configuration backup
+
+BACKUP_DIR="$HOME/.config/nvim-backups/$(date +%Y%m%d_%H%M%S)"
+mkdir -p "$BACKUP_DIR"
+
+echo "Creating Neovim backup at: $BACKUP_DIR"
+
+# Backup configuration files
+if [ -d "$HOME/.config/nvim" ]; then
+    echo "Backing up configuration..."
+    cp -r "$HOME/.config/nvim" "$BACKUP_DIR/config"
+fi
+
+# Backup plugin data
+if [ -d "$HOME/.local/share/nvim" ]; then
+    echo "Backing up plugin data..."
+    cp -r "$HOME/.local/share/nvim" "$BACKUP_DIR/share"
+fi
+
+# Backup state (sessions, etc.)
+if [ -d "$HOME/.local/state/nvim" ]; then
+    echo "Backing up state..."
+    cp -r "$HOME/.local/state/nvim" "$BACKUP_DIR/state"
+fi
+
+# Backup cache
+if [ -d "$HOME/.cache/nvim" ]; then
+    echo "Backing up cache..."
+    cp -r "$HOME/.cache/nvim" "$BACKUP_DIR/cache"
+fi
+
+# Create backup info file
+cat > "$BACKUP_DIR/backup_info.txt" << EOF
+Backup created: $(date)
+Neovim version: $(nvim --version | head -1)
+System: $(uname -a)
+Git commit: $(cd ~/.config/nvim && git rev-parse HEAD 2>/dev/null || echo "Not a git repository")
+EOF
+
+echo "Backup completed successfully!"
+echo "Location: $BACKUP_DIR"
 ```
 
-### Update LazyVim
+Make it executable:
+```bash
+chmod +x ~/.local/bin/nvim-backup
+```
+
+#### 2. Manual Backup Commands
 
 ```bash
-# Inside Neovim  
-:LazyHealth
-:Lazy update LazyVim
+# Create timestamped backup directory
+BACKUP_DIR=~/.config/nvim-backups/$(date +%Y%m%d_%H%M%S)
+mkdir -p "$BACKUP_DIR"
+
+# Backup all Neovim directories
+cp -r ~/.config/nvim "$BACKUP_DIR/config" 2>/dev/null || true
+cp -r ~/.local/share/nvim "$BACKUP_DIR/share" 2>/dev/null || true
+cp -r ~/.local/state/nvim "$BACKUP_DIR/state" 2>/dev/null || true
+cp -r ~/.cache/nvim "$BACKUP_DIR/cache" 2>/dev/null || true
+
+# Backup important system files
+cp ~/.bashrc "$BACKUP_DIR/bashrc" 2>/dev/null || true
+cp ~/.zshrc "$BACKUP_DIR/zshrc" 2>/dev/null || true
+
+echo "Backup completed: $BACKUP_DIR"
 ```
 
-## 🐛 Troubleshooting
+#### 3. Configuration-Only Backup
 
-### Plugin Issues
+For quick config backups:
 
-1. Check plugin health:
+```bash
+# Backup just the configuration
+cd ~/.config/nvim
+git add . && git commit -m "Backup: $(date)"
 
-   ```bash
-   :checkhealth
-   ```
+# Or create tar archive
+tar czf ~/nvim-config-$(date +%Y%m%d_%H%M%S).tar.gz ~/.config/nvim
+```
 
-2. Clear plugin cache:
+### Restoration Procedures
 
-   ```bash
-   :Lazy clear
-   ```
+#### 1. Full System Restoration
 
-3. Reinstall plugins:
+```bash
+# Set backup directory path
+BACKUP_DIR="/path/to/your/backup/directory"
 
-   ```bash
-   :Lazy restore
-   ```
+# Stop any running Neovim instances
+pkill nvim
 
-### LSP Issues
+# Remove current installation
+rm -rf ~/.config/nvim
+rm -rf ~/.local/share/nvim
+rm -rf ~/.local/state/nvim
+rm -rf ~/.cache/nvim
 
-1. Check LSP status:
+# Restore from backup
+cp -r "$BACKUP_DIR/config" ~/.config/nvim
+cp -r "$BACKUP_DIR/share" ~/.local/share/nvim
+cp -r "$BACKUP_DIR/state" ~/.local/state/nvim
+cp -r "$BACKUP_DIR/cache" ~/.cache/nvim
 
-   ```bash
-   :LspInfo
-   ```
+# Verify restoration
+nvim --version
+echo "Restoration completed!"
+```
 
-2. Restart LSP server:
+#### 2. Selective Restoration
 
-   ```bash
-   :LspRestart
-   ```
+Restore only specific components:
 
-### Performance Issues
+```bash
+BACKUP_DIR="/path/to/your/backup"
 
-1. Profile startup time:
+# Restore only configuration (preserves installed plugins)
+cp -r "$BACKUP_DIR/config/"* ~/.config/nvim/
 
-   ```bash
-   nvim --startuptime startup.log
-   ```
+# Restore only keymaps
+cp "$BACKUP_DIR/config/lua/config/keymaps.lua" ~/.config/nvim/lua/config/
 
-2. Check plugin load times:
+# Restore only plugins configuration
+cp -r "$BACKUP_DIR/config/lua/plugins/"* ~/.config/nvim/lua/plugins/
 
-   ```bash
-   :Lazy profile
-   ```
+# Restore plugin lockfile (exact plugin versions)
+cp "$BACKUP_DIR/config/lazy-lock.json" ~/.config/nvim/
+```
 
-## 📚 Resources
+#### 3. Git-Based Restoration
 
-- [LazyVim Documentation](https://lazyvim.github.io/)
-- [Lazy.nvim Documentation](https://github.com/folke/lazy.nvim)
-- [Neovim Documentation](https://neovim.io/doc/)
+If your config is in a git repository:
 
-## 🤝 Contributing
+```bash
+# Clone from your repository
+git clone <your-repo-url> ~/.config/nvim
 
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
+# Or reset to a specific commit
+cd ~/.config/nvim
+git reset --hard <commit-hash>
 
-## 📄 License
+# Restore plugins
+nvim --headless -c "Lazy! restore" -c "qa"
+```
 
-This configuration is available under the MIT License. See the LICENSE file for more details.
+### Automated Backup Strategy
+
+#### 1. Daily Cron Job
+
+Add to crontab (`crontab -e`):
+```bash
+# Daily Neovim backup at 2 AM
+0 2 * * * /home/yourusername/.local/bin/nvim-backup >/dev/null 2>&1
+
+# Weekly cleanup of old backups (keep last 4 weeks)
+0 3 * * 0 find ~/.config/nvim-backups -type d -mtime +28 -exec rm -rf {} + 2>/dev/null
+```
+
+#### 2. Pre-Update Hook
+
+Create `~/.config/nvim/pre-update-backup.sh`:
+```bash
+#!/bin/bash
+# Run before updating plugins
+echo "Creating pre-update backup..."
+~/.local/bin/nvim-backup
+echo "Backup completed. Proceeding with update..."
+```
+
+#### 3. Git Hooks
+
+If using git for your config:
+```bash
+# ~/.config/nvim/.git/hooks/pre-commit
+#!/bin/bash
+echo "Auto-backup before commit..."
+cp lazy-lock.json "lazy-lock.json.backup.$(date +%Y%m%d_%H%M%S)"
+```
+
+### Recovery Verification
+
+After any restoration:
+
+```bash
+# Check Neovim starts correctly
+nvim --version
+
+# Verify plugin installation
+nvim --headless -c "Lazy! check" -c "qa"
+
+# Test key functionality
+nvim +checkhealth
+
+# Verify LSP servers
+nvim -c "LspInfo" some_file.lua
+```
+
+### Emergency Recovery
+
+If Neovim won't start:
+
+```bash
+# Start with minimal config
+nvim --clean
+
+# Or start without plugins
+nvim --noplugin
+
+# Check for syntax errors in config
+nvim --headless -c "luafile ~/.config/nvim/init.lua" -c "qa"
+
+# Reset to working state
+cd ~/.config/nvim
+git reset --hard HEAD~1  # Go back one commit
+```
+
+This comprehensive backup and restoration system ensures you can always recover your exact working environment, whether dealing with failed updates, system crashes, or when setting up Neovim on new machines.
