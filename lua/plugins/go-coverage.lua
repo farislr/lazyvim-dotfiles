@@ -17,7 +17,11 @@ return {
     adapters = {
       ["neotest-golang"] = {
         runner = "go", -- Use 'go' as the test runner
-        go_test_args = { "-v", "-timeout=60s", "-coverprofile=coverage.out" },
+        go_test_args = {
+          "-v",
+          "-timeout=60s",
+          "-coverprofile=" .. vim.fn.getcwd() .. "/coverage.out",
+        },
       },
     },
   },
