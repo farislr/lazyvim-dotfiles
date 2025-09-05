@@ -3,5 +3,5 @@ return {
   dependencies = {
     "nvim-lua/plenary.nvim", -- Required for git operations
   },
-  -- opts = {},
+  opts = {},
 }
