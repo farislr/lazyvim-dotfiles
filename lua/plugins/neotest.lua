@@ -7,7 +7,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     {
       "fredrikaverpil/neotest-golang",
-      version = "*",
+      version = "^1",
       dependencies = {
         "andythigpen/nvim-coverage", -- Added dependency
       },
