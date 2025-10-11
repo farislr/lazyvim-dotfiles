@@ -20,6 +20,7 @@ return {
         go_test_args = {
           "-v",
           "-timeout=60s",
+          "-coverpkg=./...",
           "-coverprofile=" .. vim.fn.getcwd() .. "/coverage.out",
         },
       },
