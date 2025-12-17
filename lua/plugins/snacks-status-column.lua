@@ -13,7 +13,7 @@ return {
       ---@field right snacks.statuscolumn.Components
       ---@field enabled? boolean
 
-      enabled = false,
+      enabled = true,
 
       left = { "mark", "sign" }, -- priority of signs on the left (high to low)
       right = { "fold", "git" }, -- priority of signs on the right (high to low)
