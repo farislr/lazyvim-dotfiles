@@ -3,4 +3,4 @@
 -- Add any additional options here
 vim.opt.winbar = "%=%m %f"
 
-vim.lsp.set_log_level("off")
+-- vim.lsp.set_log_level("debug")

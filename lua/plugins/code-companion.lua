@@ -9,6 +9,11 @@ return {
   opts = {
     -- NOTE: The log_level is in `opts.opts`
     opts = {
+      inline_suggestions = {
+        enabled = true,
+        auto_trigger = true,
+        debounce_ms = 75,
+      },
       log_level = "DEBUG", -- or "TRACE"
     },
   },
