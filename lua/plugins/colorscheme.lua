@@ -1,7 +1,8 @@
 return {
   "folke/tokyonight.nvim",
   lazy = true,
-  opts = { style = "moon" },
+  opts = { style = "night" },
+  -- opts = { style = "moon" },
 
   -- "catppuccin/nvim",
   -- lazy = true,
