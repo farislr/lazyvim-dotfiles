@@ -1,19 +1,19 @@
 return {
-  "folke/tokyonight.nvim",
-  lazy = true,
-  opts = { style = "night" },
-  -- opts = { style = "moon" },
-
-  -- "catppuccin/nvim",
+  -- "folke/tokyonight.nvim",
   -- lazy = true,
-  -- opts = {},
-  --
-  -- {
-  --   "LazyVim/LazyVim",
-  --   opts = {
-  --     colorscheme = "catppuccin-macchiato",
-  --   },
-  -- },
+  -- opts = { style = "night" },
+  -- -- opts = { style = "moon" },
+
+  "catppuccin/nvim",
+  lazy = true,
+  opts = {},
+
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "catppuccin-mocha",
+    },
+  },
   --
   -- {
   --   "akinsho/bufferline.nvim",
